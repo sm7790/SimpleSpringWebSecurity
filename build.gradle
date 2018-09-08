@@ -1,34 +1,56 @@
-apply plugin:'war'
+
 apply plugin:'java'
 apply plugin:'eclipse-wtp'
-apply plugin: 'org.akhikhl.gretty'
+apply plugin:'maven'
+//apply plugin: "org.gretty" 
+apply plugin: 'war'
+//apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+apply plugin: 'com.bmuschko.tomcat'
 
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+         }
     }
  
-    dependencies {
-    classpath 'org.akhikhl.gretty:gretty:+'
-  }
+ dependencies {
+     classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+      
+  } 
+  
+  } 
+   /* dependencies {
+     classpath "gradle.plugin.org.gretty:gretty:2.2.0"
+ }*/
  
-}
 
-gretty {
-  port = 9070
+tomcat {
+    httpPort = 8090
+    httpsPort = 8091
+    enableSSL = true
+    contextPath = 'spwebsecurity'
+    }
+
+/*gretty {
+  httpPort = 9070
   contextPath = 'spwebsecurity'
   servletContainer = 'tomcat8'
   contextConfigFile = 'context.xml'
   debugPort = 5005      // default
   debugSuspend = true
-}
+}*/
+
 
 
 sourceSets {
 	
 	main {
 		java {
-			output.classesDir="src/main/webapp/WEB-INF/classes"
+		
+		    srcDir 'src'
+		    output.classesDir="src/main/webapp/WEB-INF/classes"
 		}
 	}
 }
@@ -38,6 +60,12 @@ repositories{
  }
 
 dependencies{
+
+
+   def tomcatVersion = '7.0.76'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+           "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
  
  compile 'org.springframework:spring-context:4.2.5.RELEASE'
  compile 'org.springframework:spring-context-support:4.2.5.RELEASE'
@@ -46,6 +74,8 @@ dependencies{
  compile("org.hibernate:hibernate-entitymanager:4.3.8.Final") {
 		exclude group: "org.jboss.spec.javax.transaction"
 	}
+	
+	
 	
  compile "org.springframework:spring-context-support:4.2.5.RELEASE"
  compile "org.springframework.security:spring-security-config:4.0.1.RELEASE"
@@ -75,6 +105,7 @@ dependencies{
 
 
 
+
 eclipse{
  project{
      name='spwebsecurity'
@@ -90,3 +121,5 @@ eclipse{
     }
    } 
 }
+
+
